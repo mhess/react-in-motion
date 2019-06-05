@@ -1,0 +1,29 @@
+.digit-container {
+  font-size: 14px;
+  width: 1.5em;
+  height: 2em;
+  overflow: hidden;
+}
+
+.digit {
+  text-align: center;
+  line-height: 2em;
+  vertical-align: middle;
+  width: inherit;
+  height: inherit;
+  background-color: white;
+  color: black;
+  /* box-sizing: border-box; */
+  /* border-bottom: 1px solid black; */
+}
+
+.digit.odd {
+  background-color: gray;
+}
+
+.slider {
+  position: relative;
+  top: -100%;
+  width: inherit;
+  height: inherit;
+}
