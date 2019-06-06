@@ -7,12 +7,15 @@ const intervalMs = 1000;
 export default class RollingDigit extends Component {
   constructor(props) {
     super(props);
-    this.state = { number: props.target, curState: 0 };
+    this.state = { number: props.target, curState: 0, nextNumber: null };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.target !== this.props.target) {
-      setTimeout(this.nextState);
+    const { target } = this.props;
+    const { number, curState } = this.state;
+
+    if (nextProps.target !== target) {
+      if (number === target && curState === 0) setTimeout(this.nextState);
       return false;
     }
     return nextState !== this.state;
@@ -21,28 +24,34 @@ export default class RollingDigit extends Component {
   nextState = () => {
     let { target } = this.props;
     const { number, curState } = this.state;
+    let { nextNumber } = this.state;
 
     let nextState;
-    let nextNumber = number;
+    nextNumber = nextNumber === null ? number : nextNumber;
+    let nextNextNumber = nextNumber;
 
     switch (curState) {
       case 0:
         nextState = 1;
+        const incr = target > number ? 1 : -1;
+        nextNextNumber = (nextNumber + incr) % 10;
         break;
       case 1:
         nextState = 2;
-        const incr = target > number ? 1 : -1;
-        nextNumber = (number + incr) % 10;
         break;
       default:
         nextState = 0;
         break;
     }
 
-    this.setState({ number: nextNumber, curState: nextState }, () => {
-      if (nextState === 2) setTimeout(this.nextState);
-      else if (target !== number && nextState === 0) setTimeout(this.nextState);
-    });
+    this.setState(
+      { number: nextNumber, nextNumber: nextNextNumber, curState: nextState },
+      () => {
+        if (nextState === 2) setTimeout(this.nextState);
+        else if (target !== number && nextState === 0)
+          setTimeout(this.nextState);
+      }
+    );
   };
 
   render() {
