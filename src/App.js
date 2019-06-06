@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 
-import RollingDigit from "./RollingDigit";
-
-import "./App.css";
+import RotatingDigit from "./rotating-digit/RotatingDigit";
 
 export default class App extends Component {
   constructor(props) {
@@ -21,8 +19,8 @@ export default class App extends Component {
   render() {
     return (
       <div className="App">
-        <RollingDigit target={this.state.current} />
-        <input ref={this.inputRef} />{" "}
+        <RotatingDigit target={this.state.current} />
+        <input ref={this.inputRef} />
         <button onClick={this.update}>Update</button>
       </div>
     );

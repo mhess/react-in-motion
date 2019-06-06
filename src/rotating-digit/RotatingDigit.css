@@ -3,6 +3,15 @@
   width: 1.5em;
   height: 2em;
   overflow: hidden;
+  position: relative;
+}
+
+.gradient-overlay {
+  position: absolute;
+  top: 0;
+  height: inherit;
+  width: inherit;
+  background-image: linear-gradient(to bottom, gray, transparent, gray);
 }
 
 .digit {
@@ -13,12 +22,6 @@
   height: inherit;
   background-color: white;
   color: black;
-  /* box-sizing: border-box; */
-  /* border-bottom: 1px solid black; */
-}
-
-.digit.odd {
-  background-color: gray;
 }
 
 .slider {

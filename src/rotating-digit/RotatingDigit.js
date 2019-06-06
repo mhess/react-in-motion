@@ -1,72 +1,77 @@
 import React, { Component } from "react";
 
-import "./RollingDigit.css";
+import "./RotatingDigit.css";
 
 const intervalMs = 1000;
 
 export default class RollingDigit extends Component {
   constructor(props) {
     super(props);
-    this.state = { number: props.target, curState: 0, nextNumber: null };
+    this.state = { number: props.target, nextNumber: null, rotationState: 0 };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const { target } = this.props;
-    const { number, curState } = this.state;
-
-    if (nextProps.target !== target) {
-      if (number === target && curState === 0) setTimeout(this.nextState);
+    if (nextProps.target !== this.props.target) {
+      if (this.doneRotating()) setTimeout(this.rotate);
       return false;
     }
     return nextState !== this.state;
   }
 
-  nextState = () => {
+  doneRotating() {
+    const { number, rotationState } = this.state;
+    return number === this.props.target && rotationState === 0;
+  }
+
+  rotate = () => {
     let { target } = this.props;
-    const { number, curState } = this.state;
+    const { number, rotationState } = this.state;
     let { nextNumber } = this.state;
 
-    let nextState;
+    let nextRotationState;
     nextNumber = nextNumber === null ? number : nextNumber;
     let nextNextNumber = nextNumber;
 
-    switch (curState) {
+    switch (rotationState) {
       case 0:
-        nextState = 1;
+        nextRotationState = 1;
         const incr = target > number ? 1 : -1;
         nextNextNumber = (nextNumber + incr) % 10;
         break;
       case 1:
-        nextState = 2;
+        nextRotationState = 2;
         break;
       default:
-        nextState = 0;
+        nextRotationState = 0;
         break;
     }
 
     this.setState(
-      { number: nextNumber, nextNumber: nextNextNumber, curState: nextState },
+      {
+        number: nextNumber,
+        nextNumber: nextNextNumber,
+        rotationState: nextRotationState
+      },
       () => {
-        if (nextState === 2) setTimeout(this.nextState);
-        else if (target !== number && nextState === 0)
-          setTimeout(this.nextState);
+        if (nextRotationState === 2) setTimeout(this.rotate);
+        else if (target !== number && nextRotationState === 0)
+          setTimeout(this.rotate);
       }
     );
   };
 
   render() {
-    console.log("render");
     const { target } = this.props;
-    const { curState, number } = this.state;
+    const { rotationState, number } = this.state;
 
     let transform, transition;
 
-    if (curState === 1) {
+    if (rotationState === 1) {
       const dir = target > number ? "-" : "";
       transform = `translateY(${dir}100%)`;
     }
 
-    if (curState !== 2) {
+    if (rotationState !== 2) {
       transition = `transform ${intervalMs}ms ease-in-out`;
     }
 
@@ -75,10 +80,11 @@ export default class RollingDigit extends Component {
         <div
           className="slider"
           style={{ transition, transform }}
-          onTransitionEnd={this.nextState}
+          onTransitionEnd={this.rotate}
         >
           <Digits number={number} />
         </div>
+        <div className="gradient-overlay" />
       </div>
     );
   }
